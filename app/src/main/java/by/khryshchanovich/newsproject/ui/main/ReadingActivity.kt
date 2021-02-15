@@ -14,16 +14,14 @@ import by.khryshchanovich.newsproject.database.dao.VocabularyDao
 import by.khryshchanovich.newsproject.database.database_vocabulary.Db
 import by.khryshchanovich.newsproject.database.entity.Vocabulary
 import by.khryshchanovich.newsproject.database.utils.launchIo
+import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.squareup.picasso.Picasso
 
 class ReadingActivity : AppCompatActivity(), View.OnClickListener {
 
-    lateinit var webLink: String
+    private lateinit var webLink: String
 
-    @SuppressLint("InflateParams")
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_reading)
@@ -46,49 +44,63 @@ class ReadingActivity : AppCompatActivity(), View.OnClickListener {
         readingTitle.text = intentTitle
         readingAuthor.text = intentAuthor
         readingDate.text = intentDate
-        Picasso.get().load(intentImage).into(readingImage)
+        if (intentImage != "None") {
+            Glide.with(this).load(intentImage).centerCrop().into(readingImage)
+        } else {
+            Glide.with(this).load(R.drawable.newspaper_icon_1).into(readingImage)
+        }
         readingDescription.text = intentDescription
         if (intentLink != null) {
             webLink = intentLink
         }
 
+        showFABReadingActivity()
+    }
+
+    @SuppressLint("InflateParams")
+    private fun showFABReadingActivity() {
         val fabReading: FloatingActionButton = findViewById(R.id.fab_reading)
         fabReading.setOnClickListener {
             val bsd = BottomSheetDialog(this)
             val viewFragment = layoutInflater.inflate(R.layout.fragment_scrolling, null)
+            bsd.setCancelable(false)
+            bsd.setContentView(viewFragment)
+            bsd.show()
 
             val cancelButton = viewFragment.findViewById<Button>(R.id.cancel_button_bsb)
             cancelButton.setOnClickListener {
                 bsd.cancel()
             }
-            val wordET = viewFragment.findViewById<EditText>(R.id.enter_word_edit_text)
-            val meaningET = viewFragment.findViewById<EditText>(R.id.enter_word_meaning_edit_text)
 
-            val db: VocabularyDao? = Db.getDb(this).vocabularyDao()
+            addWordDatabaseReadingActivity(viewFragment)
+        }
+    }
 
-            val addWordButton = viewFragment.findViewById<Button>(R.id.add_button_bsb)
-            addWordButton.setOnClickListener {
-                if ((wordET.text.toString() == "")
-                    or (meaningET.text.toString() == "")
-                ) {
-                    Toast.makeText(this, "Enter word and meaning!", Toast.LENGTH_SHORT)
-                        .show()
-                    return@setOnClickListener
-                }
-                val word = wordET.text.toString()
-                val meaning = meaningET.text.toString()
-                val vocabulary = Vocabulary(word, meaning)
+    private fun addWordDatabaseReadingActivity(viewFragment: View) {
+        val wordET = viewFragment.findViewById<EditText>(R.id.enter_word_edit_text)
+        val meaningET = viewFragment.findViewById<EditText>(R.id.enter_word_meaning_edit_text)
 
-                launchIo {
-                    db?.addWord(vocabulary)
-                }
-                Toast.makeText(this, "Word added", Toast.LENGTH_SHORT).show()
-                wordET.text.clear()
-                meaningET.text.clear()
+        val db: VocabularyDao? = Db.getDb(this).vocabularyDao()
+
+        val addWordButton = viewFragment.findViewById<Button>(R.id.add_button_bsb)
+        addWordButton.setOnClickListener {
+            if ((wordET.text.toString() == "")
+                or (meaningET.text.toString() == "")
+            ) {
+                Toast.makeText(this, "Enter word and meaning!", Toast.LENGTH_SHORT)
+                    .show()
+                return@setOnClickListener
             }
-            bsd.setCancelable(false)
-            bsd.setContentView(viewFragment)
-            bsd.show()
+            val word = wordET.text.toString()
+            val meaning = meaningET.text.toString()
+            val vocabulary = Vocabulary(word, meaning)
+
+            launchIo {
+                db?.addWord(vocabulary)
+            }
+            Toast.makeText(this, "Word added", Toast.LENGTH_SHORT).show()
+            wordET.text.clear()
+            meaningET.text.clear()
         }
     }
 

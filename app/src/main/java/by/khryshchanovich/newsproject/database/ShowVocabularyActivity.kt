@@ -33,9 +33,10 @@ class ShowVocabularyActivity : AppCompatActivity() {
             launchForResult {
                 launchUi {
                     val adapter = VocabularyAdapter(result)
-                    vocabularyRecycler.adapter = adapter
-                    vocabularyRecycler.layoutManager = LinearLayoutManager(this)
+                    adapter.notifyDataSetChanged()
                     vocabularyRecycler.hasFixedSize()
+                    vocabularyRecycler.layoutManager = LinearLayoutManager(this)
+                    vocabularyRecycler.adapter = adapter
                 }
             }
 

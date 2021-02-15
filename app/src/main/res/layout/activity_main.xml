@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".MainActivity">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -43,10 +44,10 @@
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabs"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="32dp"
             android:background="@color/colorTab"
             app:tabMode="scrollable"
-            app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
+            app:tabTextAppearance="@style/TabLayoutTextStyle"
             app:tabTextColor="@color/colorTabText" />
     </com.google.android.material.appbar.AppBarLayout>
 

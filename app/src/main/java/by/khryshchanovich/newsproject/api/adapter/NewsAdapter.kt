@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import by.khryshchanovich.newsproject.R
 import by.khryshchanovich.newsproject.ui.main.ReadingActivity
 import by.khryshchanovich.newsproject.api.entity.NewsData
-import com.squareup.picasso.Picasso
+import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.item_news.view.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -46,8 +46,8 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.NewsVH>() {
         private lateinit var linkArticle: String
         private lateinit var pictureArticle: String
 
-        val parser = SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z", Locale.getDefault())
-        val formatter = SimpleDateFormat("MMM d, yyyy h:mm a", Locale.getDefault())
+        private val parser = SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z", Locale.getDefault())
+        private val formatter = SimpleDateFormat("MMM d, yyyy h:mm a", Locale.getDefault())
 
         fun bind(newsData: NewsData) {
             with(itemView) {
@@ -55,11 +55,21 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.NewsVH>() {
                 val dateTime = formatter.format(parser.parse(newsData.published))
                 dateArticle = dateTime
                 descriptionArticle = newsData.description.toString()
-                linkArticle = newsData.url
+                linkArticle = newsData.url.toString()
                 pictureArticle = newsData.image.toString()
                 author_text_view.text = newsData.author
-                Picasso.get().load(newsData.image).into(image_view)
                 title_text_view.text = newsData.title
+                if (newsData.image != "None") {
+                    Glide.with(this).load(newsData.image)
+                        .override(130, 100)
+                        .centerCrop()
+                        .into(image_view)
+                } else {
+                    Glide.with(this).load(R.drawable.newspaper_icon_1)
+                        .override(130, 100)
+                        .centerCrop()
+                        .into(image_view)
+                }
             }
         }
 

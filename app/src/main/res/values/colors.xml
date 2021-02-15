@@ -5,4 +5,5 @@
     <color name="colorAccent">#F44336</color>
     <color name="colorTab">#FFFFFF</color>
     <color name="colorTabText">#000000</color>
+    <color name="colorBar">#FFF3E0</color>
 </resources>
